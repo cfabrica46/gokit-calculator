@@ -1,132 +1,111 @@
 package service_test
 
+import (
+	"errors"
+	"strconv"
+	"testing"
+
+	"github.com/cfabrica46/gokit-calculator/service"
+	"github.com/stretchr/testify/assert"
+)
+
 const (
-// idTest       int    = 1
-// usernameTest string = "username"
-// passwordTest string = "password"
-// emailTest    string = "email@email.com"
-// secretTest   string = "secret"
+	v1Test = "10"
+	v2Test = "2"
 
-// urlTest       string = "localhost:8080"
-// dbHostTest    string = "db"
-// tokenHostTest string = "token"
-// portTest      string = "8080"
-// tokenTest     string = "token"
+	addResult      = 12
+	subtractResult = 8
 
-// schemaNameTest string = "%v"
+	wrongV = "wrong"
 )
 
-var (
 // errWebServer        = errors.New("error from web server")
-// errNotTypeIndicated = errors.New("response is not of the type indicated")
-)
+var errNotTypeIndicated = errors.New("response is not of the type indicated")
 
-// func TestSignUp(t *testing.T) {
-// 	for index, table := range []struct {
-// 		inUsername, inPassword, inEmail string
-// 		url                             string
-// 		method                          string
-// 		isError                         bool
-// 	}{
-// 		{
-// 			inUsername: usernameTest,
-// 			inPassword: passwordTest,
-// 			inEmail:    emailTest,
-// 			isError:    false,
-// 			url:        "http://token:8080/generate",
-// 			method:     http.MethodPost,
-// 		},
-// 		{
-// 			inUsername: usernameTest,
-// 			inPassword: passwordTest,
-// 			inEmail:    emailTest,
-// 			isError:    true,
-// 			url:        "http://db:8080/user",
-// 			method:     http.MethodPost,
-// 		},
-// 		{
-// 			inUsername: usernameTest,
-// 			inPassword: passwordTest,
-// 			inEmail:    emailTest,
-// 			isError:    true,
-// 			url:        "http://db:8080/id/username",
-// 			method:     http.MethodGet,
-// 		},
-// 		{
-// 			inUsername: usernameTest,
-// 			inPassword: passwordTest,
-// 			inEmail:    emailTest,
-// 			isError:    true,
-// 			url:        "http://token:8080/generate",
-// 			method:     http.MethodPost,
-// 		},
-// 		{
-// 			inUsername: usernameTest,
-// 			inPassword: passwordTest,
-// 			inEmail:    emailTest,
-// 			isError:    true,
-// 			url:        "http://token:8080/token",
-// 			method:     http.MethodPost,
-// 		},
-// 	} {
-// 		t.Run(fmt.Sprintf(schemaNameTest, index), func(t *testing.T) {
-// 			var resultToken string
-// 			var resultErr error
-// 			var tokenResponse, errorResponse string
+func TestAdd(t *testing.T) {
+	for index, table := range []struct {
+		inV1, inV2 string
+		outError   string
+		outResult  int
+	}{
+		{
+			inV1:      v1Test,
+			inV2:      v2Test,
+			outResult: addResult,
+			outError:  "",
+		},
+		{
+			inV1:      wrongV,
+			inV2:      v2Test,
+			outResult: 0,
+			outError:  "invalid syntax",
+		},
+		{
+			inV1:      v1Test,
+			inV2:      wrongV,
+			outResult: 0,
+			outError:  "invalid syntax",
+		},
+	} {
+		t.Run(strconv.Itoa(index), func(t *testing.T) {
+			var result int
+			var resultErr string
 
-// 			if table.isError {
-// 				errorResponse = errWebServer.Error()
-// 			} else {
-// 				tokenResponse = tokenTest
-// 			}
+			svc := service.NewService()
 
-// 			testResp := struct {
-// 				Token string `json:"token"`
-// 				Err   string `json:"err"`
-// 				ID    int    `json:"id"`
-// 			}{
-// 				ID:    idTest,
-// 				Token: tokenResponse,
-// 				Err:   errorResponse,
-// 			}
+			result, err := svc.Add(table.inV1, table.inV2)
+			if err != nil {
+				resultErr = err.Error()
+				assert.Contains(t, resultErr, table.outError)
+			} else {
+				assert.Zero(t, table.outError)
+			}
 
-// 			jsonData, err := json.Marshal(testResp)
-// 			if err != nil {
-// 				t.Error(err)
-// 			}
+			assert.Equal(t, table.outResult, result)
+		})
+	}
+}
 
-// 			mock := service.NewMockClient(func(req *http.Request) (*http.Response, error) {
-// 				response := &http.Response{Body: io.NopCloser(bytes.NewReader([]byte("{}")))}
+func TestSubtract(t *testing.T) {
+	for index, table := range []struct {
+		inV1, inV2 string
+		outError   string
+		outResult  int
+	}{
+		{
+			inV1:      v1Test,
+			inV2:      v2Test,
+			outResult: subtractResult,
+			outError:  "",
+		},
+		{
+			inV1:      wrongV,
+			inV2:      v2Test,
+			outResult: 0,
+			outError:  "invalid syntax",
+		},
+		{
+			inV1:      v1Test,
+			inV2:      wrongV,
+			outResult: 0,
+			outError:  "invalid syntax",
+		},
+	} {
+		t.Run(strconv.Itoa(index), func(t *testing.T) {
+			var result int
+			var resultErr string
 
-// 				if req.URL.String() == table.url {
-// 					if req.Method == table.method {
-// 						response = &http.Response{
-// 							StatusCode: http.StatusOK,
-// 							Body:       io.NopCloser(bytes.NewReader(jsonData)),
-// 						}
-// 					}
-// 				}
+			svc := service.NewService()
 
-// 				return response, nil
-// 			})
+			result, err := svc.Subtract(table.inV1, table.inV2)
+			if err != nil {
+				resultErr = err.Error()
+				assert.Contains(t, resultErr, table.outError)
+			} else {
+				assert.Zero(t, table.outError)
+			}
 
-// 			svc := service.NewService(
-// 				mock,
-// 				dbHostTest,
-// 				portTest,
-// 				tokenHostTest,
-// 				portTest,
-// 				secretTest,
-// 			)
-
-// 			resultToken, resultErr = svc.SignUp(table.inUsername, table.inPassword, table.inEmail)
-
-// 			if !table.isError {
-// 				assert.Nil(t, resultErr)
-// 			} else {
-// 				assert.ErrorContains(t, resultErr, errorResponse)
-// 			}
-// 			assert.Equal(t, tokenResponse, resultToken)
-// 		})
-// 	}
-// }
+			assert.Equal(t, table.outResult, result)
+		})
+	}
+}

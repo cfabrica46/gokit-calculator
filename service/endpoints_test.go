@@ -1,77 +1,104 @@
 package service_test
 
-// func TestSignUpEndpoint(t *testing.T) {
-// 	for index, table := range []struct { in       service.SignUpRequest
-// 		outToken string
-// 		outErr   string
-// 		isError  bool
-// 	}{
-// 		{
-// 			in: service.SignUpRequest{
-// 				Username: usernameTest,
-// 				Password: passwordTest,
-// 				Email:    emailTest,
-// 			},
-// 			outToken: tokenTest,
-// 			outErr:   "",
-// 			isError:  false,
-// 		},
-// 		{
-// 			in:       service.SignUpRequest{},
-// 			outToken: "",
-// 			outErr:   errWebServer.Error(),
-// 			isError:  true,
-// 		},
-// 	} {
-// 		t.Run(fmt.Sprintf(schemaNameTest, index), func(t *testing.T) {
-// 			testResp := struct {
-// 				Token string `json:"token"`
-// 				Err   string `json:"err"`
-// 				ID    int    `json:"id"`
-// 			}{
-// 				ID:    idTest,
-// 				Token: table.outToken,
-// 				Err:   table.outErr,
-// 			}
+import (
+	"context"
+	"strconv"
+	"testing"
 
-// 			jsonData, err := json.Marshal(testResp)
-// 			if err != nil {
-// 				t.Error(err)
-// 			}
+	"github.com/cfabrica46/gokit-calculator/service"
+	"github.com/stretchr/testify/assert"
+)
 
-// 			mock := service.NewMockClient(func(req *http.Request) (*http.Response, error) {
-// 				return &http.Response{
-// 					StatusCode: http.StatusOK,
-// 					Body:       ioutil.NopCloser(bytes.NewReader(jsonData)),
-// 				}, nil
-// 			})
+func TestAddEndpoint(t *testing.T) {
+	for index, table := range []struct {
+		outErr    string
+		in        service.AddRequest
+		outResult int
+		isError   bool
+	}{
+		{
+			in: service.AddRequest{
+				V1: v1Test,
+				V2: v2Test,
+			},
+			outResult: addResult,
+			outErr:    "",
+			isError:   false,
+		},
+		{
+			in:        service.AddRequest{},
+			outResult: 0,
+			outErr:    "invalid syntax",
+			isError:   true,
+		},
+	} {
+		t.Run(strconv.Itoa(index), func(t *testing.T) {
+			svc := service.NewService()
 
-// 			svc := service.NewService(
-// 				mock,
-// 				dbHostTest,
-// 				portTest,
-// 				tokenHostTest,
-// 				portTest,
-// 				secretTest,
-// 			)
+			r, err := service.MakeAddEndpoint(svc)(context.TODO(), table.in)
+			if err != nil {
+				t.Error(err)
+			}
 
-// 			r, err := service.MakeSignUpEndpoint(svc)(context.TODO(), table.in)
-// 			if err != nil {
-// 				t.Error(err)
-// 			}
+			result, ok := r.(service.AddResponse)
+			if !ok {
+				t.Error(errNotTypeIndicated)
+			}
 
-// 			result, ok := r.(service.SignUpResponse)
-// 			if !ok {
-// 				t.Error(errNotTypeIndicated)
-// 			}
+			if !table.isError {
+				assert.Zero(t, result.Err)
+			} else {
+				assert.Contains(t, result.Err, table.outErr)
+			}
 
-// 			if !table.isError {
-// 				assert.Zero(t, result.Err)
-// 			} else {
-// 				assert.Contains(t, result.Err, table.outErr)
-// 			}
+			assert.Equal(t, table.outResult, result.Result)
+		})
+	}
+}
 
-// 			assert.Equal(t, table.outToken, result.Token)
-// 		})
-// 	}
-// }
+func TestSubtractEndpoint(t *testing.T) {
+	for index, table := range []struct {
+		outErr    string
+		in        service.SubtractRequest
+		outResult int
+		isError   bool
+	}{
+		{
+			in: service.SubtractRequest{
+				V1: v1Test,
+				V2: v2Test,
+			},
+			outResult: subtractResult,
+			outErr:    "",
+			isError:   false,
+		},
+		{
+			in:        service.SubtractRequest{},
+			outResult: 0,
+			outErr:    "invalid syntax",
+			isError:   true,
+		},
+	} {
+		t.Run(strconv.Itoa(index), func(t *testing.T) {
+			svc := service.NewService()
+
+			r, err := service.MakeSubtractEndpoint(svc)(context.TODO(), table.in)
+			if err != nil {
+				t.Error(err)
+			}
+
+			result, ok := r.(service.SubtractResponse)
+			if !ok {
+				t.Error(errNotTypeIndicated)
+			}
+
+			if !table.isError {
+				assert.Zero(t, result.Err)
+			} else {
+				assert.Contains(t, result.Err, table.outErr)
+			}
+
+			assert.Equal(t, table.outResult, result.Result)
+		})
+	}
+}
