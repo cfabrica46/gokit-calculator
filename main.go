@@ -20,13 +20,13 @@ func runServer(port string) {
 
 	getAddHandler := httptransport.NewServer(
 		service.MakeAddEndpoint(svc),
-		service.DecodeAddRequest,
+		service.DecodeRequest,
 		service.EncodeResponse,
 	)
 
 	getSubtractHandler := httptransport.NewServer(
 		service.MakeSubtractEndpoint(svc),
-		service.DecodeSubtractRequest,
+		service.DecodeRequest,
 		service.EncodeResponse,
 	)
 

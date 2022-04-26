@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// DecodeAddRequest ...
+/* // DecodeAddRequest ...
 func DecodeAddRequest(_ context.Context, r *http.Request) (req interface{}, err error) {
 	var request AddRequest
 
@@ -22,6 +22,18 @@ func DecodeAddRequest(_ context.Context, r *http.Request) (req interface{}, err 
 // DecodeSubtractRequest ...
 func DecodeSubtractRequest(_ context.Context, r *http.Request) (req interface{}, err error) {
 	var request SubtractRequest
+
+	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return
+	}
+
+	req = request
+
+	return
+} */
+
+func DecodeRequest(_ context.Context, r *http.Request) (req interface{}, err error) {
+	var request Request
 
 	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return
