@@ -1,0 +1,302 @@
+run:
+    # Some linters do not support Go 1.18 and are deactivated
+    go: "1.17"
+
+linters:
+    presets:
+        - unused
+        - bugs
+        - error
+        - style
+        - metalinter
+        - performance
+        - complexity
+        - format
+        - import
+        - module
+        - test
+        - sql
+        - module
+        - comment
+
+    enable:
+        - revive
+        - asciicheck
+        - bidichk
+        - bodyclose
+        - containedctx
+        - contextcheck
+        - cyclop
+        - deadcode
+        - decorder
+        - depguard
+        - dogsled
+        - dupl
+        - durationcheck
+        - errchkjson
+        - errname
+        - errorlint
+        - goerr113
+        - errcheck
+        - exhaustive
+        - exportloopref
+        - forbidigo
+        - forcetypeassert
+        - gochecknoglobals
+        - gochecknoinits
+        - gocognit
+        - goconst
+        - gocritic
+        - gocyclo
+        - godot
+        - godox
+        - goheader
+        - gomnd
+        - gomoddirectives
+        - gomodguard
+        - goprintffuncname
+        - gosec
+        - gosimple
+        - govet
+        - grouper
+        - ifshort
+        - importas
+        - ineffassign
+        - ireturn
+        - maintidx
+        - makezero
+        - misspell
+        - nakedret
+        - nestif
+        - nilerr
+        - nilnil
+        - nlreturn
+        - noctx
+        - nolintlint
+        - prealloc
+        - predeclared
+        - promlinter
+        - rowserrcheck
+        - sqlclosecheck
+        - staticcheck
+        - structcheck
+        - stylecheck
+        - tagliatelle
+        - tenv
+        - testpackage
+        - thelper
+        - tparallel
+        - typecheck
+        - unconvert
+        - unparam
+        - unused
+        - varcheck
+        - varnamelen
+        - wastedassign
+        - whitespace
+        - wsl
+
+    disable:
+        # Deprecated
+        - golint
+        - interfacer
+        - scopelint
+        - maligned
+
+        # I do not use it
+        - gofmt
+        - gofumpt
+        - goimports
+        - funlen
+        - paralleltest
+        - exhaustivestruct
+        - gci
+        - lll
+
+linters-settings:
+    prealloc:
+        simple: true
+        range-loops: true
+        for-loops: true
+
+    nakedret:
+        max-func-lines: 10
+
+    ifshort:
+        max-decl-lines: 2
+        max-decl-chars: 40
+
+    gosimple:
+        go: "1.18"
+        checks: ["all"]
+
+    staticcheck:
+        go: "1.18"
+        checks: ["all"]
+
+    stylecheck:
+        go: "1.18"
+        checks: ["all"]
+
+    gomnd:
+        checks:
+            - argument
+            - case
+            - condition
+            - operation
+            - return
+            - assign
+
+        ignored-numbers:
+            - "1"
+            - "1.0"
+            - "0"
+            - "0.0"
+
+    goconst:
+        match-constant: true
+        min-len: 2
+        min-occurrences: 3
+        min: 3
+        max: 3
+
+    dupl:
+        threshold: 250
+
+    gocritic:
+        enabled-tags:
+            - diagnostic
+            - style
+            - performance
+            - opinionated
+
+        disabled-tags:
+            - experimental
+
+    gocognit:
+        min-complexity: 30
+
+    gocyclo:
+        min-complexity: 30
+
+    cyclop:
+        max-complexity: 12
+
+    decorder:
+        disable-dec-order-check: false
+        dec-order:
+            - type
+            - const
+            - var
+            - func
+
+    forbidigo:
+        forbid:
+            - "^print$(# Do not commit print statements, use the 'fmt' package instead)?"
+            - "^println$(# Do not commit print statements, use the 'fmt' package instead)?"
+
+    varnamelen:
+        min-name-length: 2
+        max-distance: 8
+        ignore-decls:
+            - c echo.Context
+            - c *gin.Context
+            - t *testing.T
+            - b *testing.B
+            - i int
+            - w http.ResponseWriter
+            - r *http.Request
+
+    govet:
+        check-shadowing: true
+        enable:
+            - asmdecl
+            - assign
+            - atomic
+            - atomicalign
+            - bools
+            - buildtag
+            - cgocall
+            - composites
+            - copylocks
+            - deepequalerrors
+            - errorsas
+            - fieldalignment
+            - findcall
+            - framepointer
+            - httpresponse
+            - ifaceassert
+            - loopclosure
+            - lostcancel
+            - nilfunc
+            - nilness
+            - printf
+            - reflectvaluecompare
+            - shadow
+            - shift
+            - sigchanyzer
+            - sortslice
+            - stdmethods
+            - stringintconv
+            - structtag
+            - testinggoroutine
+            - tests
+            - unmarshal
+            - unreachable
+            - unsafeptr
+            - unusedresult
+            - unusedwrite
+
+    revive:
+        rules:
+            - name: atomic
+            - name: unreachable-code
+            - name: blank-imports
+            - name: context-as-argument
+            - name: context-keys-type
+            - name: dot-imports
+            - name: error-return
+            - name: error-strings
+            - name: error-naming
+            - name: if-return
+            - name: increment-decrement
+            - name: var-naming
+            - name: var-declaration
+            - name: range
+            - name: receiver-naming
+            - name: time-naming
+            - name: time-equal
+            - name: unexported-return
+            - name: indent-error-flow
+            - name: errorf
+            - name: unnecessary-stmt
+            - name: get-return
+            - name: modifies-parameter
+            - name: modifies-value-receiver
+            - name: confusing-naming
+            - name: confusing-results
+            - name: constant-logical-expr
+            - name: range-val-in-closure
+            - name: range-val-address
+            - name: waitgroup-by-value
+            - name: empty-block
+            - name: superfluous-else
+            - name: unused-parameter
+            - name: unused-receiver
+            - name: unreachable-code
+            - name: early-return
+            - name: defer
+            - name: useless-break
+            - name: optimize-operands-order
+            - name: unconditional-recursion
+            - name: identical-branches
+            - name: redefines-builtin-id
+
+            - name: imports-blacklist
+              arguments:
+                  - "crypto/md5"
+                  - "crypto/sha1"
+                  - "io/ioutil"
+
+            - name: line-length-limit
+              arguments: [130]
