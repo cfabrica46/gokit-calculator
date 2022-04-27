@@ -40,7 +40,7 @@ func TestDecodeRequest(t *testing.T) {
 		{badReq, service.Request{}, "EOF"},
 	} {
 		t.Run(strconv.Itoa(index), func(t *testing.T) {
-			var result interface{}
+			var result any
 			var resultErr string
 
 			r, err := service.DecodeRequest(context.TODO(), table.in)
@@ -63,7 +63,7 @@ func TestDecodeRequest(t *testing.T) {
 
 func TestEncodeResponse(t *testing.T) {
 	for index, table := range []struct {
-		in     interface{}
+		in     any
 		outErr string
 	}{
 		{"test", ""},

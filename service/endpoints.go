@@ -8,7 +8,7 @@ import (
 
 // MakeOperationEndpoint ...
 func MakeOperationEndpoint(svc serviceInterface, st State) endpoint.Endpoint {
-	return func(_ context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request any) (any, error) {
 		var errMessage string
 
 		req, _ := request.(Request)

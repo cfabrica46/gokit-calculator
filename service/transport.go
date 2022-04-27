@@ -8,7 +8,7 @@ import (
 )
 
 // DecodeRequest ...
-func DecodeRequest(_ context.Context, r *http.Request) (req interface{}, err error) {
+func DecodeRequest(_ context.Context, r *http.Request) (req any, err error) {
 	var request Request
 	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, fmt.Errorf("error to decode: %w", err)
@@ -18,7 +18,7 @@ func DecodeRequest(_ context.Context, r *http.Request) (req interface{}, err err
 }
 
 // EncodeResponse ...
-func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+func EncodeResponse(_ context.Context, w http.ResponseWriter, response any) error {
 	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
 		return fmt.Errorf("error to encode: %w", err)
