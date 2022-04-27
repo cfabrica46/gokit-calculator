@@ -19,37 +19,31 @@ func NewService() *Service {
 }
 
 // Add ...
-func (Service) Add(v1, v2 string) (result int, err error) {
+func (Service) Add(v1, v2 string) (int, error) {
 	vInt1, err := strconv.Atoi(v1)
 	if err != nil {
-		return
+		return 0, fmt.Errorf("error convertation: %w", err)
 	}
 
 	vInt2, err := strconv.Atoi(v2)
 	if err != nil {
-		return
+		return 0, fmt.Errorf("error convertation: %w", err)
 	}
 
-	result = vInt1 + vInt2
-
-	return
+	return vInt1 + vInt2, nil
 }
 
 // Subtract ...
-func (Service) Subtract(v1, v2 string) (result int, err error) {
-	fmt.Println(v1, v2)
-
+func (Service) Subtract(v1, v2 string) (int, error) {
 	vInt1, err := strconv.Atoi(v1)
 	if err != nil {
-		return
+		return 0, fmt.Errorf("error convertation: %w", err)
 	}
 
 	vInt2, err := strconv.Atoi(v2)
 	if err != nil {
-		return
+		return 0, fmt.Errorf("error convertation: %w", err)
 	}
 
-	result = vInt1 - vInt2
-
-	return
+	return vInt1 + vInt2, nil
 }

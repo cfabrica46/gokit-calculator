@@ -8,7 +8,7 @@ import (
 
 // MakeAddEndpoint ...
 func MakeAddEndpoint(svc serviceInterface) endpoint.Endpoint {
-	return func(_ context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request any) (any, error) {
 		var errMessage string
 
 		req, _ := request.(AddRequest)
@@ -24,7 +24,7 @@ func MakeAddEndpoint(svc serviceInterface) endpoint.Endpoint {
 
 // MakeSubtactEndpoint ...
 func MakeSubtractEndpoint(svc serviceInterface) endpoint.Endpoint {
-	return func(_ context.Context, request interface{}) (interface{}, error) {
+	return func(_ context.Context, request any) (any, error) {
 		var errMessage string
 
 		req, _ := request.(SubtractRequest)

@@ -19,7 +19,6 @@ const (
 	wrongV = "wrong"
 )
 
-// errWebServer        = errors.New("error from web server")
 var errNotTypeIndicated = errors.New("response is not of the type indicated")
 
 func TestAdd(t *testing.T) {

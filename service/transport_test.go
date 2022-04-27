@@ -40,7 +40,7 @@ func TestDecodeAddRequest(t *testing.T) {
 		{badReq, service.AddRequest{}, "EOF"},
 	} {
 		t.Run(strconv.Itoa(index), func(t *testing.T) {
-			var result interface{}
+			var result any
 			var resultErr string
 
 			r, err := service.DecodeAddRequest(context.TODO(), table.in)
@@ -88,7 +88,7 @@ func TestDecodeSubtractRequest(t *testing.T) {
 		{badReq, service.SubtractRequest{}, "EOF"},
 	} {
 		t.Run(strconv.Itoa(index), func(t *testing.T) {
-			var result interface{}
+			var result any
 			var resultErr string
 
 			r, err := service.DecodeSubtractRequest(context.TODO(), table.in)
@@ -111,7 +111,7 @@ func TestDecodeSubtractRequest(t *testing.T) {
 
 func TestEncodeResponse(t *testing.T) {
 	for index, table := range []struct {
-		in     interface{}
+		in     any
 		outErr string
 	}{
 		{"test", ""},
