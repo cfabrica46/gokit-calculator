@@ -1,13 +1,14 @@
 package service
 
 import (
+	"fmt"
 	"strconv"
 )
 
 type serviceInterface interface {
 	/* Add(string, string) (int, error)
 	Subtract(string, string) (int, error) */
-	Operation(string, string) (int, error)
+	Operation(string, string, State) (int, error)
 }
 
 // Service ...
@@ -19,54 +20,16 @@ func NewService() *Service {
 }
 
 // Operation...
-func (Service) Operation(v1, v2 string) (result int, err error) {
+func (Service) Operation(v1, v2 string, st State) (result int, err error) {
 	vInt1, err := strconv.Atoi(v1)
 	if err != nil {
-		return
+		return result, fmt.Errorf("error convertation: %w", err)
 	}
 
 	vInt2, err := strconv.Atoi(v2)
 	if err != nil {
-		return
+		return result, fmt.Errorf("error convertation: %w", err)
 	}
 
-	result = vInt1 + vInt2
-
-	return result, err
+	return st.Operation(vInt1, vInt2), err
 }
-
-/* // Add ...
-func (Service) Add(v1, v2 string) (result int, err error) {
-	vInt1, err := strconv.Atoi(v1)
-	if err != nil {
-		return
-	}
-
-	vInt2, err := strconv.Atoi(v2)
-	if err != nil {
-		return
-	}
-
-	result = vInt1 + vInt2
-
-	return
-}
-
-// Subtract ...
-func (Service) Subtract(v1, v2 string) (result int, err error) {
-	fmt.Println(v1, v2)
-
-	vInt1, err := strconv.Atoi(v1)
-	if err != nil {
-		return
-	}
-
-	vInt2, err := strconv.Atoi(v2)
-	if err != nil {
-		return
-	}
-
-	result = vInt1 - vInt2
-
-	return
-} */

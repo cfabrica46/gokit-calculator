@@ -9,71 +9,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAddEndpoint(t *testing.T) {
+func TestOperationEndpoint(t *testing.T) {
 	for index, table := range []struct {
+		inState   service.State
 		outErr    string
-		in        service.AddRequest
+		in        service.Request
 		outResult int
 		isError   bool
 	}{
 		{
-			in: service.AddRequest{
+			in: service.Request{
 				V1: v1Test,
 				V2: v2Test,
 			},
+			inState:   service.NewAddState(),
 			outResult: addResult,
 			outErr:    "",
 			isError:   false,
 		},
 		{
-			in:        service.AddRequest{},
-			outResult: 0,
-			outErr:    "invalid syntax",
-			isError:   true,
-		},
-	} {
-		t.Run(strconv.Itoa(index), func(t *testing.T) {
-			svc := service.NewService()
-
-			r, err := service.MakeAddEndpoint(svc)(context.TODO(), table.in)
-			if err != nil {
-				t.Error(err)
-			}
-
-			result, ok := r.(service.AddResponse)
-			if !ok {
-				t.Error(errNotTypeIndicated)
-			}
-
-			if !table.isError {
-				assert.Zero(t, result.Err)
-			} else {
-				assert.Contains(t, result.Err, table.outErr)
-			}
-
-			assert.Equal(t, table.outResult, result.Result)
-		})
-	}
-}
-
-func TestSubtractEndpoint(t *testing.T) {
-	for index, table := range []struct {
-		outErr    string
-		in        service.SubtractRequest
-		outResult int
-		isError   bool
-	}{
-		{
-			in: service.SubtractRequest{
+			in: service.Request{
 				V1: v1Test,
 				V2: v2Test,
 			},
+			inState:   service.NewSubtractState(),
 			outResult: subtractResult,
 			outErr:    "",
 			isError:   false,
 		},
 		{
-			in:        service.SubtractRequest{},
+			in:        service.Request{},
 			outResult: 0,
 			outErr:    "invalid syntax",
 			isError:   true,
@@ -82,12 +47,12 @@ func TestSubtractEndpoint(t *testing.T) {
 		t.Run(strconv.Itoa(index), func(t *testing.T) {
 			svc := service.NewService()
 
-			r, err := service.MakeSubtractEndpoint(svc)(context.TODO(), table.in)
+			r, err := service.MakeOperationEndpoint(svc, table.inState)(context.TODO(), table.in)
 			if err != nil {
 				t.Error(err)
 			}
 
-			result, ok := r.(service.SubtractResponse)
+			result, ok := r.(service.Response)
 			if !ok {
 				t.Error(errNotTypeIndicated)
 			}

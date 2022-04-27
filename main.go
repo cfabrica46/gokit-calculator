@@ -10,25 +10,29 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const (
+	port = 8080
+)
+
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	runServer(8080)
+	runServer()
 }
 
-func runServer(portInt int) {
-	port := strconv.Itoa(portInt)
+func runServer() {
+	portString := strconv.Itoa(port)
 
 	svc := service.NewService()
 
 	getAddHandler := httptransport.NewServer(
-		service.MakeAddEndpoint(svc),
+		service.MakeOperationEndpoint(svc, service.NewAddState()),
 		service.DecodeRequest,
 		service.EncodeResponse,
 	)
 
 	getSubtractHandler := httptransport.NewServer(
-		service.MakeSubtractEndpoint(svc),
+		service.MakeOperationEndpoint(svc, service.NewSubtractState()),
 		service.DecodeRequest,
 		service.EncodeResponse,
 	)
@@ -37,6 +41,6 @@ func runServer(portInt int) {
 	router.Methods(http.MethodPost).Path("/add").Handler(getAddHandler)
 	router.Methods(http.MethodPost).Path("/subtract").Handler(getSubtractHandler)
 
-	log.Println("ListenAndServe on localhost:" + port)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	log.Println("ListenAndServe on localhost:" + portString)
+	log.Fatal(http.ListenAndServe(":"+portString, router))
 }
