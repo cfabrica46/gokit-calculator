@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/cfabrica46/gokit-calculator/service"
 	httptransport "github.com/go-kit/kit/transport/http"
@@ -12,10 +13,12 @@ import (
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	runServer("8080")
+	runServer(8080)
 }
 
-func runServer(port string) {
+func runServer(portInt int) {
+	port := strconv.Itoa(portInt)
+
 	svc := service.NewService()
 
 	getAddHandler := httptransport.NewServer(
