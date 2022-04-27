@@ -32,7 +32,7 @@ func (Service) Operation(v1, v2 string) (result int, err error) {
 
 	result = vInt1 + vInt2
 
-	return
+	return result, err
 }
 
 /* // Add ...

@@ -34,21 +34,14 @@ func DecodeSubtractRequest(_ context.Context, r *http.Request) (req interface{},
 
 func DecodeRequest(_ context.Context, r *http.Request) (req interface{}, err error) {
 	var request Request
-
 	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return
 	}
 
-	req = request
-
-	return
+	return request, nil
 }
 
 // EncodeResponse ...
 func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) (err error) {
-	if err = json.NewEncoder(w).Encode(response); err != nil {
-		return
-	}
-
-	return
+	return json.NewEncoder(w).Encode(response)
 }
