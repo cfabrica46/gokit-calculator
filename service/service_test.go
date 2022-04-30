@@ -21,32 +21,36 @@ const (
 
 var errNotTypeIndicated = errors.New("response is not of the type indicated")
 
-func TestAdd(t *testing.T) {
+func TestAddAndSubtract(t *testing.T) {
 	for index, table := range []struct {
-		inV1, inV2 string
-		outError   string
-		outResult  int
+		inV1, inV2        string
+		outError          string
+		outResultAdd      int
+		outResultSubtract int
 	}{
 		{
-			inV1:      v1Test,
-			inV2:      v2Test,
-			outResult: addResult,
-			outError:  "",
+			inV1:              v1Test,
+			inV2:              v2Test,
+			outResultAdd:      addResult,
+			outResultSubtract: subtractResult,
+			outError:          "",
 		},
 		{
-			inV1:      wrongV,
-			inV2:      v2Test,
-			outResult: 0,
-			outError:  "invalid syntax",
+			inV1:              wrongV,
+			inV2:              v2Test,
+			outResultAdd:      0,
+			outResultSubtract: 0,
+			outError:          "invalid syntax",
 		},
 		{
-			inV1:      v1Test,
-			inV2:      wrongV,
-			outResult: 0,
-			outError:  "invalid syntax",
+			inV1:              v1Test,
+			inV2:              wrongV,
+			outResultAdd:      0,
+			outResultSubtract: 0,
+			outError:          "invalid syntax",
 		},
 	} {
-		t.Run(strconv.Itoa(index), func(t *testing.T) {
+		t.Run("Add: "+strconv.Itoa(index), func(t *testing.T) {
 			var result int
 			var resultErr string
 
@@ -60,37 +64,9 @@ func TestAdd(t *testing.T) {
 				assert.Zero(t, table.outError)
 			}
 
-			assert.Equal(t, table.outResult, result)
+			assert.Equal(t, table.outResultAdd, result)
 		})
-	}
-}
-
-func TestSubtract(t *testing.T) {
-	for index, table := range []struct {
-		inV1, inV2 string
-		outError   string
-		outResult  int
-	}{
-		{
-			inV1:      v1Test,
-			inV2:      v2Test,
-			outResult: subtractResult,
-			outError:  "",
-		},
-		{
-			inV1:      wrongV,
-			inV2:      v2Test,
-			outResult: 0,
-			outError:  "invalid syntax",
-		},
-		{
-			inV1:      v1Test,
-			inV2:      wrongV,
-			outResult: 0,
-			outError:  "invalid syntax",
-		},
-	} {
-		t.Run(strconv.Itoa(index), func(t *testing.T) {
+		t.Run("Subtract: "+strconv.Itoa(index), func(t *testing.T) {
 			var result int
 			var resultErr string
 
@@ -104,7 +80,7 @@ func TestSubtract(t *testing.T) {
 				assert.Zero(t, table.outError)
 			}
 
-			assert.Equal(t, table.outResult, result)
+			assert.Equal(t, table.outResultSubtract, result)
 		})
 	}
 }

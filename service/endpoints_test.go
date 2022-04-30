@@ -9,33 +9,42 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAddEndpoint(t *testing.T) {
+func TestAddAndSubtractEndpoint(t *testing.T) {
 	for index, table := range []struct {
-		outErr    string
-		in        service.AddRequest
-		outResult int
-		isError   bool
+		outErr            string
+		inAdd             service.AddRequest
+		inSubtract        service.SubtractRequest
+		outResultAdd      int
+		outResultSubtract int
+		isError           bool
 	}{
 		{
-			in: service.AddRequest{
+			inAdd: service.AddRequest{
 				V1: v1Test,
 				V2: v2Test,
 			},
-			outResult: addResult,
-			outErr:    "",
-			isError:   false,
+			inSubtract: service.SubtractRequest{
+				V1: v1Test,
+				V2: v2Test,
+			},
+			outResultAdd:      addResult,
+			outResultSubtract: subtractResult,
+			outErr:            "",
+			isError:           false,
 		},
 		{
-			in:        service.AddRequest{},
-			outResult: 0,
-			outErr:    "invalid syntax",
-			isError:   true,
+			inAdd:             service.AddRequest{},
+			inSubtract:        service.SubtractRequest{},
+			outResultAdd:      0,
+			outResultSubtract: 0,
+			outErr:            "invalid syntax",
+			isError:           true,
 		},
 	} {
-		t.Run(strconv.Itoa(index), func(t *testing.T) {
+		t.Run("Add: "+strconv.Itoa(index), func(t *testing.T) {
 			svc := service.NewService()
 
-			r, err := service.MakeAddEndpoint(svc)(context.TODO(), table.in)
+			r, err := service.MakeAddEndpoint(svc)(context.TODO(), table.inAdd)
 			if err != nil {
 				t.Error(err)
 			}
@@ -51,38 +60,12 @@ func TestAddEndpoint(t *testing.T) {
 				assert.Contains(t, result.Err, table.outErr)
 			}
 
-			assert.Equal(t, table.outResult, result.Result)
+			assert.Equal(t, table.outResultAdd, result.Result)
 		})
-	}
-}
-
-func TestSubtractEndpoint(t *testing.T) {
-	for index, table := range []struct {
-		outErr    string
-		in        service.SubtractRequest
-		outResult int
-		isError   bool
-	}{
-		{
-			in: service.SubtractRequest{
-				V1: v1Test,
-				V2: v2Test,
-			},
-			outResult: subtractResult,
-			outErr:    "",
-			isError:   false,
-		},
-		{
-			in:        service.SubtractRequest{},
-			outResult: 0,
-			outErr:    "invalid syntax",
-			isError:   true,
-		},
-	} {
-		t.Run(strconv.Itoa(index), func(t *testing.T) {
+		t.Run("Subtract: "+strconv.Itoa(index), func(t *testing.T) {
 			svc := service.NewService()
 
-			r, err := service.MakeSubtractEndpoint(svc)(context.TODO(), table.in)
+			r, err := service.MakeSubtractEndpoint(svc)(context.TODO(), table.inSubtract)
 			if err != nil {
 				t.Error(err)
 			}
@@ -98,7 +81,7 @@ func TestSubtractEndpoint(t *testing.T) {
 				assert.Contains(t, result.Err, table.outErr)
 			}
 
-			assert.Equal(t, table.outResult, result.Result)
+			assert.Equal(t, table.outResultSubtract, result.Result)
 		})
 	}
 }
