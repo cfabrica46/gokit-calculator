@@ -11,14 +11,14 @@ func MakeAddEndpoint(svc serviceInterface) endpoint.Endpoint {
 	return func(_ context.Context, request any) (any, error) {
 		var errMessage string
 
-		req, _ := request.(AddRequest)
+		req, _ := request.(Request)
 
 		result, err := svc.Add(req.V1, req.V2)
 		if err != nil {
 			errMessage = err.Error()
 		}
 
-		return AddResponse{Result: result, Err: errMessage}, nil
+		return Response{Result: result, Err: errMessage}, nil
 	}
 }
 
@@ -27,13 +27,13 @@ func MakeSubtractEndpoint(svc serviceInterface) endpoint.Endpoint {
 	return func(_ context.Context, request any) (any, error) {
 		var errMessage string
 
-		req, _ := request.(SubtractRequest)
+		req, _ := request.(Request)
 
 		result, err := svc.Subtract(req.V1, req.V2)
 		if err != nil {
 			errMessage = err.Error()
 		}
 
-		return SubtractResponse{Result: result, Err: errMessage}, nil
+		return Response{Result: result, Err: errMessage}, nil
 	}
 }

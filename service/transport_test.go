@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"strconv"
 	"testing"
 
@@ -12,98 +13,79 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDecodeAddAndSubtractRequest(t *testing.T) {
+func TestDecodeAddAndRequest(t *testing.T) {
 	url := "localhost:8080"
 
-	dataJSONAdd, err := json.Marshal(service.AddRequest{V1: v1Test, V2: v2Test})
+	dataJSON, err := json.Marshal(service.Request{V1: v1Test, V2: v2Test})
 	if err != nil {
 		t.Error(err)
 	}
 
-	goodReqAdd, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer(dataJSONAdd))
+	goodReq, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer(dataJSON))
 	if err != nil {
 		t.Error(err)
 	}
 
-	badReqAdd, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer([]byte{}))
-	if err != nil {
-		t.Error(err)
-	}
-
-	dataJSONSubtract, err := json.Marshal(service.SubtractRequest{V1: v1Test, V2: v2Test})
-	if err != nil {
-		t.Error(err)
-	}
-
-	goodReqSubtract, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer(dataJSONSubtract))
-	if err != nil {
-		t.Error(err)
-	}
-
-	badReqSubtract, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer([]byte{}))
+	badReq, err := http.NewRequest(http.MethodGet, url, bytes.NewBuffer([]byte{}))
 	if err != nil {
 		t.Error(err)
 	}
 
 	for index, table := range []struct {
-		inAdd       *http.Request
-		inSubtract  *http.Request
-		outAdd      service.AddRequest
-		outSubtract service.SubtractRequest
-		outErr      string
+		in     *http.Request
+		out    service.Request
+		outErr string
 	}{
 		{
-			inAdd:       goodReqAdd,
-			inSubtract:  goodReqSubtract,
-			outAdd:      service.AddRequest{V1: v1Test, V2: v2Test},
-			outSubtract: service.SubtractRequest{V1: v1Test, V2: v2Test},
-			outErr:      "",
+			in:     goodReq,
+			out:    service.Request{V1: v1Test, V2: v2Test},
+			outErr: "",
 		},
 		{
-			inAdd:       badReqAdd,
-			inSubtract:  badReqSubtract,
-			outAdd:      service.AddRequest{},
-			outSubtract: service.SubtractRequest{},
-			outErr:      "EOF",
+			in:     badReq,
+			out:    service.Request{},
+			outErr: "EOF",
 		},
 	} {
 		t.Run("Add: "+strconv.Itoa(index), func(t *testing.T) {
 			var result any
 			var resultErr string
 
-			r, err := service.DecodeAddRequest(context.TODO(), table.inAdd)
+			r, err := service.DecodeRequest(context.TODO(), table.in)
 			if err != nil {
 				resultErr = err.Error()
 			}
 
-			result, ok := r.(service.AddRequest)
+			result, ok := r.(service.Request)
 			if !ok {
-				if (table.outAdd != service.AddRequest{}) {
+				if (table.out != service.Request{}) {
 					t.Error("result is not of the type indicated")
 				}
 			}
 
 			assert.Contains(t, resultErr, table.outErr)
-			assert.Equal(t, table.outAdd, result)
+			assert.Equal(t, table.out, result)
 		})
-		t.Run("Subtract: "+strconv.Itoa(index), func(t *testing.T) {
-			var result any
+	}
+}
+
+func TestEncodeResponse(t *testing.T) {
+	for index, table := range []struct {
+		in     any
+		outErr string
+	}{
+		{"test", ""},
+		{func() {}, "json: unsupported type: func()"},
+	} {
+		t.Run(strconv.Itoa(index), func(t *testing.T) {
 			var resultErr string
 
-			r, err := service.DecodeSubtractRequest(context.TODO(), table.inSubtract)
+			err := service.EncodeResponse(context.TODO(), httptest.NewRecorder(), table.in)
 			if err != nil {
 				resultErr = err.Error()
 			}
 
-			result, ok := r.(service.SubtractRequest)
-			if !ok {
-				if (table.outSubtract != service.SubtractRequest{}) {
-					t.Error("result is not of the type indicated")
-				}
-			}
-
-			assert.Contains(t, resultErr, table.outErr)
-			assert.Equal(t, table.outAdd, result)
+			assert.Equal(t, table.outErr, resultErr)
 		})
 	}
 }

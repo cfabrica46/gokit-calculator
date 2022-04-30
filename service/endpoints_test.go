@@ -12,18 +12,13 @@ import (
 func TestAddAndSubtractEndpoint(t *testing.T) {
 	for index, table := range []struct {
 		outErr            string
-		inAdd             service.AddRequest
-		inSubtract        service.SubtractRequest
+		in                service.Request
 		outResultAdd      int
 		outResultSubtract int
 		isError           bool
 	}{
 		{
-			inAdd: service.AddRequest{
-				V1: v1Test,
-				V2: v2Test,
-			},
-			inSubtract: service.SubtractRequest{
+			in: service.Request{
 				V1: v1Test,
 				V2: v2Test,
 			},
@@ -33,8 +28,7 @@ func TestAddAndSubtractEndpoint(t *testing.T) {
 			isError:           false,
 		},
 		{
-			inAdd:             service.AddRequest{},
-			inSubtract:        service.SubtractRequest{},
+			in:                service.Request{},
 			outResultAdd:      0,
 			outResultSubtract: 0,
 			outErr:            "invalid syntax",
@@ -44,12 +38,12 @@ func TestAddAndSubtractEndpoint(t *testing.T) {
 		t.Run("Add: "+strconv.Itoa(index), func(t *testing.T) {
 			svc := service.NewService()
 
-			r, err := service.MakeAddEndpoint(svc)(context.TODO(), table.inAdd)
+			r, err := service.MakeAddEndpoint(svc)(context.TODO(), table.in)
 			if err != nil {
 				t.Error(err)
 			}
 
-			result, ok := r.(service.AddResponse)
+			result, ok := r.(service.Response)
 			if !ok {
 				t.Error(errNotTypeIndicated)
 			}
@@ -65,12 +59,12 @@ func TestAddAndSubtractEndpoint(t *testing.T) {
 		t.Run("Subtract: "+strconv.Itoa(index), func(t *testing.T) {
 			svc := service.NewService()
 
-			r, err := service.MakeSubtractEndpoint(svc)(context.TODO(), table.inSubtract)
+			r, err := service.MakeSubtractEndpoint(svc)(context.TODO(), table.in)
 			if err != nil {
 				t.Error(err)
 			}
 
-			result, ok := r.(service.SubtractResponse)
+			result, ok := r.(service.Response)
 			if !ok {
 				t.Error(errNotTypeIndicated)
 			}
