@@ -55,7 +55,7 @@ func TestDecodeAddRequest(t *testing.T) {
 				}
 			}
 
-			assert.Equal(t, table.outErr, resultErr)
+			assert.Contains(t, resultErr, table.outErr)
 			assert.Equal(t, table.out, result)
 		})
 	}
@@ -103,7 +103,7 @@ func TestDecodeSubtractRequest(t *testing.T) {
 				}
 			}
 
-			assert.Equal(t, table.outErr, resultErr)
+			assert.Contains(t, resultErr, table.outErr)
 			assert.Equal(t, table.out, result)
 		})
 	}

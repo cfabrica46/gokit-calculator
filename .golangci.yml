@@ -161,7 +161,7 @@ linters-settings:
         max: 3
 
     dupl:
-        threshold: 250
+        threshold: 125
 
     gocritic:
         enabled-tags:

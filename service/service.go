@@ -45,5 +45,5 @@ func (Service) Subtract(v1, v2 string) (int, error) {
 		return 0, fmt.Errorf("error convertation: %w", err)
 	}
 
-	return vInt1 + vInt2, nil
+	return vInt1 - vInt2, nil
 }
