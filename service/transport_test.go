@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"strconv"
 	"testing"
 
@@ -103,7 +104,28 @@ func TestDecodeAddAndSubtractRequest(t *testing.T) {
 			}
 
 			assert.Contains(t, resultErr, table.outErr)
-			assert.Equal(t, table.outAdd, result)
+			assert.Equal(t, table.outSubtract, result)
+		})
+	}
+}
+
+func TestEncodeResponse(t *testing.T) {
+	for index, table := range []struct {
+		in     any
+		outErr string
+	}{
+		{"test", ""},
+		{func() {}, "json: unsupported type: func()"},
+	} {
+		t.Run(strconv.Itoa(index), func(t *testing.T) {
+			var resultErr string
+
+			err := service.EncodeResponse(context.TODO(), httptest.NewRecorder(), table.in)
+			if err != nil {
+				resultErr = err.Error()
+			}
+
+			assert.Equal(t, table.outErr, resultErr)
 		})
 	}
 }
