@@ -15,7 +15,6 @@ func TestAddAndSubtractEndpoint(t *testing.T) {
 		in                service.Request
 		outResultAdd      int
 		outResultSubtract int
-		isError           bool
 	}{
 		{
 			in: service.Request{
@@ -25,57 +24,42 @@ func TestAddAndSubtractEndpoint(t *testing.T) {
 			outResultAdd:      addResult,
 			outResultSubtract: subtractResult,
 			outErr:            "",
-			isError:           false,
 		},
 		{
 			in:                service.Request{},
 			outResultAdd:      0,
 			outResultSubtract: 0,
 			outErr:            "invalid syntax",
-			isError:           true,
 		},
 	} {
-		t.Run("Add: "+strconv.Itoa(index), func(t *testing.T) {
-			svc := service.NewService()
+		testFunc := func(f service.FuncMakeEndpoint) func(t *testing.T) {
+			return func(t *testing.T) {
+				t.Helper()
 
-			r, err := service.MakeAddEndpoint(svc)(context.TODO(), table.in)
-			if err != nil {
-				t.Error(err)
+				svc := service.NewService()
+
+				r, err := f(svc)(context.TODO(), table.in)
+				if err != nil {
+					t.Error(err)
+				}
+
+				result, ok := r.(service.Response)
+				if !ok {
+					t.Error(errNotTypeIndicated)
+				}
+
+				if table.outErr == "" {
+					assert.Zero(t, result.Err)
+				} else {
+					assert.Contains(t, result.Err, table.outErr)
+				}
+
+				assert.Equal(t, table.outResultAdd, result.Result)
 			}
+		}
 
-			result, ok := r.(service.Response)
-			if !ok {
-				t.Error(errNotTypeIndicated)
-			}
+		t.Run("Add: "+strconv.Itoa(index), testFunc(service.MakeAddEndpoint))
 
-			if !table.isError {
-				assert.Zero(t, result.Err)
-			} else {
-				assert.Contains(t, result.Err, table.outErr)
-			}
-
-			assert.Equal(t, table.outResultAdd, result.Result)
-		})
-		t.Run("Subtract: "+strconv.Itoa(index), func(t *testing.T) {
-			svc := service.NewService()
-
-			r, err := service.MakeSubtractEndpoint(svc)(context.TODO(), table.in)
-			if err != nil {
-				t.Error(err)
-			}
-
-			result, ok := r.(service.Response)
-			if !ok {
-				t.Error(errNotTypeIndicated)
-			}
-
-			if !table.isError {
-				assert.Zero(t, result.Err)
-			} else {
-				assert.Contains(t, result.Err, table.outErr)
-			}
-
-			assert.Equal(t, table.outResultSubtract, result.Result)
-		})
+		t.Run("Subtract: "+strconv.Itoa(index), testFunc(service.MakeSubtractEndpoint))
 	}
 }

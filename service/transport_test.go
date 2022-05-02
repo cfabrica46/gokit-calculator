@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDecodeAddAndRequest(t *testing.T) {
+func TestDecodeRequest(t *testing.T) {
 	url := "localhost:8080"
 
 	dataJSON, err := json.Marshal(service.Request{V1: v1Test, V2: v2Test})

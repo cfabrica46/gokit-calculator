@@ -6,6 +6,8 @@ import (
 	"github.com/go-kit/kit/endpoint"
 )
 
+type FuncMakeEndpoint func(serviceInterface) endpoint.Endpoint
+
 // MakeAddEndpoint ...
 func MakeAddEndpoint(svc serviceInterface) endpoint.Endpoint {
 	return func(_ context.Context, request any) (any, error) {
